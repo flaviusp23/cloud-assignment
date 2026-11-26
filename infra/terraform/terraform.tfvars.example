@@ -1,0 +1,2 @@
+# Copy to terraform.tfvars (it is in .gitignore) and fill it in.
+subscription_id = "00000000-0000-0000-0000-000000000000"
