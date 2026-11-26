@@ -5,3 +5,4 @@ target/
 .terraform/
 terraform.tfvars
 dist/
+screenshots/
