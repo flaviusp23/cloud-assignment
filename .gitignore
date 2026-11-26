@@ -4,3 +4,4 @@ target/
 *.tfstate.*
 .terraform/
 terraform.tfvars
+dist/
