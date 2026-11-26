@@ -50,6 +50,7 @@ resource "azurerm_postgresql_flexible_server" "db" {
   administrator_login           = "app"
   administrator_password        = random_password.db.result
   public_network_access_enabled = true
+  zone                          = "1" # Azure picks one if unset; stating it keeps `plan` clean
 }
 
 resource "azurerm_postgresql_flexible_server_database" "bookmarks" {

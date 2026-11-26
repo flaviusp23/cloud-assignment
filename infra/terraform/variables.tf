@@ -4,7 +4,7 @@ variable "subscription_id" {
 }
 
 variable "location" {
-  description = "Region. Student subscriptions only allow a few (France Central works)."
+  description = "Region. Student subscriptions only allow a few, and B1ms is only available in some (Poland Central works, France Central does not)."
   type        = string
-  default     = "francecentral"
+  default     = "polandcentral"
 }
