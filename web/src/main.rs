@@ -1,8 +1,5 @@
-// Bookmarks frontend: a single page built with Leptos, compiled to WebAssembly.
-//
-// Where the API lives is set when the page is built:
-//   API_URL=https://my-api... trunk build --release
-// Without it, the page talks to the API running locally with docker compose.
+// The bookmarks page: Leptos, compiled to WebAssembly.
+// The API address is set when building: API_URL=https://... trunk build --release
 
 use gloo_net::http::Request;
 use leptos::prelude::*;
@@ -13,7 +10,6 @@ const API: &str = match option_env!("API_URL") {
     None => "http://localhost:8090",
 };
 
-// A bookmark as the API sends it.
 #[derive(Clone, Deserialize)]
 struct Bookmark {
     id: i64,
@@ -21,14 +17,12 @@ struct Bookmark {
     url: String,
 }
 
-// What we send to the API to create one.
 #[derive(Serialize)]
 struct NewBookmark {
     title: String,
     url: String,
 }
 
-// Ask the API for all bookmarks. If the call fails, show an empty list.
 async fn fetch_bookmarks() -> Vec<Bookmark> {
     match Request::get(&format!("{API}/api/bookmarks")).send().await {
         Ok(response) => response.json().await.unwrap_or_default(),
@@ -43,15 +37,9 @@ fn App() -> impl IntoView {
     let title = RwSignal::new(String::new());
     let url = RwSignal::new(String::new());
 
-    // Load the list from the API (also used after every change).
-    let reload = move || {
-        leptos::task::spawn_local(async move {
-            bookmarks.set(fetch_bookmarks().await);
-        });
-    };
-    reload();
+    // Load the list when the page opens.
+    leptos::task::spawn_local(async move { bookmarks.set(fetch_bookmarks().await) });
 
-    // Form submitted: POST the new bookmark, clear the fields, reload the list.
     let add = move |event: leptos::ev::SubmitEvent| {
         event.prevent_default();
         let new = NewBookmark { title: title.get(), url: url.get() };
@@ -67,7 +55,6 @@ fn App() -> impl IntoView {
         });
     };
 
-    // Delete button clicked: DELETE it, then reload the list.
     let remove = move |id: i64| {
         leptos::task::spawn_local(async move {
             let _ = Request::delete(&format!("{API}/api/bookmarks/{id}")).send().await;
